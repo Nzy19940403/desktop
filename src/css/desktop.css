@@ -1,0 +1,184 @@
+﻿*,:after,:before {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box
+}
+    
+.desktop
+{
+    position:relative;
+    overflow:hidden;
+    font-family: "微软雅黑";
+    font-size: 14px;
+}
+
+.desktop-viewport
+{
+    position:absolute;
+    top:0;
+    left:0;
+    bottom:50px;
+    right:0;
+    overflow:hidden;
+    z-index:190;
+}
+
+.desktop-toolbar
+{
+    position:absolute;
+    height:50px;
+    left:0;
+    bottom:0;
+    right:0;
+    overflow:hidden;
+    background-color:rgba(33,43,54,.5);
+    z-index:200;
+}
+
+.desktop-background
+{
+    position:absolute;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    z-index:150;
+}
+
+
+.desktop-startbutton
+{
+    position:absolute;
+    left:0;
+    top:0;
+    width: 55px;
+    height:100%;
+    background:  url(images/start.png) no-repeat 40% 50%;
+    background-size:90% 80%;
+}
+
+.desktop-startbutton:hover{
+    background-image: url(images/start2.png);
+}
+
+.desktop-searchbar
+{
+    position:absolute;
+    left:65px;
+    top:0;
+    width: 300px;
+    height:100%;   
+    background: #000;
+    opacity: 0.5; 
+}
+
+.desktop-timebar
+{
+    position:absolute;
+    right:0;
+    top:0;
+    width:100px;
+    height:100%;  
+    background: #000;
+    opacity: 0.5;
+}
+
+.desktop-taskbar
+{
+    position:absolute;
+    left:365px;
+    right:100px;
+    top:0;
+    height:100%;
+    overflow:hidden;
+}
+
+.desktop-icon-wrapper
+{
+    position:relative;
+    z-index:100;
+    width: 100%;
+    height: 100%;
+}
+
+.desktop-icon
+{
+    position:absolute;
+    width:80px;
+    height:90px;
+    margin:5px;
+    border:solid 1px transparent;
+    border-radius:4px;
+    overflow:hidden;
+}
+
+.desktop-icon:hover
+{
+    border-color:#247eba;
+    background-color:rgba(47,129,187, 0.15);
+}
+
+.desktop-icon-image
+{
+    width:100%;
+    height:62px;
+    overflow:hidden;
+}
+.desktop-icon-text
+{
+    font-weight:bold;
+    color:White;
+    text-align:center;
+}
+
+
+.desktop-taskbar-icon
+{
+    position:relative;
+    height: 100%;
+    padding: 0px 5px;
+    background: rgba(163, 163, 163, 0.8);
+    color: #fff;
+    line-height: 43px;
+    margin:0px 2px;  
+    min-width:20px;
+    float:left;
+}
+
+/*.desktop-taskbar-icon.desktop-window-active
+{
+    background: rgba(163, 163, 163, 0.5);    
+}*/
+
+.desktop-taskbar-icon > i
+{
+    width:60px;
+    height:50px;
+    text-align: center;
+    line-height: 50px;   
+    font-size: 25px;
+}
+
+
+.window
+{
+    position:absolute;
+    background:white;
+    border:solid 1px #999;
+    z-index:1000;
+}
+
+.window-min
+{
+    display:none !important;
+}
+
+.window-max
+{
+    left:0px !important;
+    top:0px !important;
+    width:100% !important;
+    height:100% !important;
+}
+
+

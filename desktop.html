@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <script src="src/js/jquery.js" type="text/javascript"></script>
+    <script src="src/js/desktop.js" type="text/javascript"></script>
+    <script src="src/windows.js" type="text/javascript"></script>
+    <link href="src/css/desktop.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="src/fonts/font-awesome/css/font-awesome.min.css">
+    <style>
+    html, body
+    {
+        margin:0;
+        height:100%;
+    }
+    </style>
+</head>
+<body>
+
+    <div id="d" style="width:100%;height:100%;"></div>
+
+</body>
+</html>
+<script>
+    
+    var app = new DeskTop("#d", {
+        backgroundImage: "images/BeachSoccerBoys_ZH-CN12914801215_1920x1080.jpg",
+        icons: [
+            { icon: "images/qq.png", taskIcon:"fa fa-qq",text: "腾讯QQ", name: "qq", row: 0, column: 0 },
+            { icon: "images/go.png",taskIcon:"fa fa-google", text: "Go", name: "go", row: 1, column: 0 },
+            { icon: "images/dota2.png",taskIcon:"fa fa-steam-square", text: "Dota2", name: "dota2", row: 2, column: 0 }
+        ],
+        iconDblClick: function (event, icon) {
+            if (icon.name == "qq") {
+
+                var win = new QQWindow({
+                    icon: icon.icon,
+                    taskIcon:icon.taskIcon,
+                    width: 500,
+                    height: 300
+                });
+                app.regiterWindow(win);
+
+                win.show(100, 100);
+            }else if(icon.name=="go"){
+                
+            }
+        },
+        iconClick: function (event, icon) {
+            //alert(icon.name);
+        }
+    });
+
+
+</script>
