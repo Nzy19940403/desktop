@@ -26,40 +26,40 @@
 <script>
     
     
-    $(window).ready(function(){
-            var app = new DeskTop("#d", {
-            backgroundImage: "images/BeachSoccerBoys_ZH-CN12914801215_1920x1080.jpg",
-            icons: [
-                { icon: "images/qq.png", taskIcon:"fa fa-qq",text: "腾讯QQ", name: "qq", row: 0, column: 0 },
-                { icon: "images/go.png",taskIcon:"fa fa-google", text: "Go", name: "go", row: 1, column: 0 },
-                { icon: "images/dota2.png",taskIcon:"fa fa-steam-square", text: "Dota2", name: "dota2", row: 2, column: 0 },
-                { icon: "images/dota2.png",taskIcon:"fa fa-steam-square", text: "Dota2", name: "dota2", row: 3, column: 0 },
-                { icon: "images/dota2.png",taskIcon:"fa fa-steam-square", text: "Dota2", name: "dota2", row: 4, column: 0 },
-                { icon: "images/dota2.png",taskIcon:"fa fa-steam-square", text: "Dota2", name: "dota2", row: 5, column: 0 },
-                { icon: "images/dota2.png",taskIcon:"fa fa-steam-square", text: "Dota2", name: "dota2", row: 0, column: 1 },
-                { icon: "images/dota2.png",taskIcon:"fa fa-steam-square", text: "Dota2", name: "dota2", row: 1, column: 1 }
-            ],
-            iconDblClick: function (event, icon) {
-                if (icon.name == "qq") {
+    
+    var app = new DeskTop("#d", {
+    backgroundImage: "images/BeachSoccerBoys_ZH-CN12914801215_1920x1080.jpg",
+    icons: [
+        { icon: "images/qq.png", taskIcon:"fa fa-qq",text: "腾讯QQ", name: "qq", row: 0, column: 0 },
+        { icon: "images/go.png",taskIcon:"fa fa-google", text: "Go", name: "go", row: 1, column: 0 },
+        { icon: "images/dota2.png",taskIcon:"fa fa-steam-square", text: "Dota2", name: "dota2", row: 2, column: 0 },
+        { icon: "images/dota2.png",taskIcon:"fa fa-steam-square", text: "Dota2", name: "dota2", row: 3, column: 0 },
+        { icon: "images/dota2.png",taskIcon:"fa fa-steam-square", text: "Dota2", name: "dota2", row: 4, column: 0 },
+        { icon: "images/dota2.png",taskIcon:"fa fa-steam-square", text: "Dota2", name: "dota2", row: 5, column: 0 },
+        { icon: "images/dota2.png",taskIcon:"fa fa-steam-square", text: "Dota2", name: "dota2", row: 0, column: 1 },
+        { icon: "images/dota2.png",taskIcon:"fa fa-steam-square", text: "Dota2", name: "dota2", row: 1, column: 1 }
+    ],
+    iconDblClick: function (event, icon) {
+        if (icon.name == "qq") {
 
-                    var win = new QQWindow({
-                        icon: icon.icon,
-                        taskIcon:icon.taskIcon,
-                        width: 600,
-                        height: 450
-                    });
-                    app.regiterWindow(win);
+            var win = new QQWindow({
+                icon: icon.icon,
+                taskIcon:icon.taskIcon,
+                width: 600,
+                height: 450
+            });
+            app.regiterWindow(win);
 
-                    win.show();
-                }else if(icon.name=="go"){
-                    
-                }
-            },
-            iconClick: function (event, icon) {
-                //alert(icon.name);
-            }
-        });
-    })
+            win.show();
+        }else if(icon.name=="go"){
+            
+        }
+    },
+    iconClick: function (event, icon) {
+        //alert(icon.name);
+    }
+});
+
 
 
 

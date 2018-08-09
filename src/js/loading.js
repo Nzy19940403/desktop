@@ -1,4 +1,4 @@
-$(window).load(function(){
+$(document).ready(function(){
     var template,
         num=Math.random(),
         height=($(window).height()-150)/2;
@@ -81,5 +81,8 @@ $(window).load(function(){
                         '</div>';
         }
     $(template).appendTo('body')
-    $('#loadMask').delay(5000).hide(0);  
+    // $('#loadMask').delay(5000).hide(0);  
+})
+$(window).load(function(){
+    $('#loadMask').delay(1000).hide(0);  
 })
