@@ -92,5 +92,6 @@
             setTimeout(function(){
                 $('#loadMask').delay(1000).hide(0);  
             },100)
-        }       
+        }
+       
     }
