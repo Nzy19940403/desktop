@@ -1,4 +1,4 @@
-$(document).ready(function(){
+
     var template,
         num=Math.random(),
         height=($(window).height()-150)/2;
@@ -80,9 +80,17 @@ $(document).ready(function(){
                             '</div>'+
                         '</div>';
         }
+
+    
     $(template).appendTo('body')
     // $('#loadMask').delay(5000).hide(0);  
-})
-$(window).load(function(){
-    $('#loadMask').delay(1000).hide(0);  
-})
+
+    document.onreadystatechange = completeLoading; 
+
+    function completeLoading(){
+        if(document.readyState == "complete"){
+            setTimeout(function(){
+                $('#loadMask').delay(1000).hide(0);  
+            },100)
+        }       
+    }
