@@ -11,8 +11,8 @@ DeskTop.prototype = {
         taskIcon:null,
         iconClick: null,
         iconDblClick: null,
-        cellWidth: 120,
-        cellHeight: 150
+        cellWidth: 90,
+        cellHeight: 100
     },
 
     init: function () {
@@ -24,13 +24,13 @@ DeskTop.prototype = {
 
         if (!opt.icons) opt.icons = [];
 
-        var resizeTimer = null;
+        // var resizeTimer = null;
         $(window).bind('resize', function (){
             
-            if (resizeTimer) clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(function(){
-                console.log("窗口发生改变了哟！");
-            } , 500);
+            // if (resizeTimer) clearTimeout(resizeTimer);
+            // resizeTimer = setTimeout(function(){
+                me.initIcons();
+            // } , 500);
         });
         
         el.addClass("desktop");
@@ -97,19 +97,38 @@ DeskTop.prototype = {
             height = el.height(),
             cellWidth = opt.cellWidth,
             cellHeight = opt.cellHeight,
-            rows = parseInt(height / cellHeight),
-            columns = parseInt(width / cellWidth),
+            rows = (height-height%cellHeight)/cellHeight,
+            columns = (width-width%cellWidth)/cellWidth,
             html = "";
-
+        console.log(columns)
+        console.log(rows)
         $.each(icons, function (index, icon) {
             if (icon.row == null || icon.column == null) return;
-            var y = icon.row * cellHeight,
-                x = icon.column * cellWidth;
-            html += '<div class="desktop-icon" style="left:' + x + 'px;top:' + y + 'px;"><image class="desktop-icon-image" src="';
-            html += icon.icon;
-            html += '"/><div class="desktop-icon-text">';
-            html += icon.text;
-            html += '</div></div>';
+                var x = icon.column * (cellWidth+width%cellWidth/(columns+1));
+                var y = icon.row * (cellHeight+height%cellHeight/(rows+1));
+                if(index+1>rows&&index+1<rows*columns){
+                    var newrow=index%rows;
+                    var newcol=(index-index%rows)/rows;
+                    var y = newrow * (cellHeight+height%cellHeight/(rows+1));
+                    var x = newcol * (cellWidth+width%cellWidth/(columns+1));
+                }else if(index+1>rows*columns){
+                    alert('请调整窗口大小');     
+                }
+                // var newrow=index%rows
+                // console.log(newrow)
+                // var y = newrow * (cellHeight+height%cellHeight/(rows+1));
+                // if(newrow<icon.row&&index>rows-1){
+                //     var x = (icon.column+1) * (cellWidth+width%cellWidth/(columns+1));
+             
+                // }
+                // var x = icon.column * (cellWidth+width%cellWidth/(columns+1));
+                html += '<div class="desktop-icon" style="left:' + x + 'px;top:' + y + 'px;"><image class="desktop-icon-image" src="';
+                html += icon.icon;
+                html += '"/><div class="desktop-icon-text">';
+                html += icon.text;
+                html += '</div></div>';
+            
+            
         });
 
         me.iconWrapper.html(html);
@@ -175,10 +194,20 @@ TaskWindow.prototype = {
         var me = this,
             el = me.element;
 
-        el.css({
-            left: x + "px",
-            top: y + "px"
-        });
+        if(x==null||y==null){
+            var width=el.width();
+            console.log(width)
+            el.css({
+                left: "200px",
+                top: "200px"
+            });
+        }else{
+            el.css({
+                left: x + "px",
+                top: y + "px"
+            });
+        }
+        
 
         //me.taskBarIcon.addClass("
 
