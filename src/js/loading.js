@@ -82,7 +82,8 @@
         }
 
     
-    $(template).appendTo('body')
+   
+
     // $('#loadMask').delay(5000).hide(0);  
 
     document.onreadystatechange = completeLoading; 
