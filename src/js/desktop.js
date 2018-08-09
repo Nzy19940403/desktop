@@ -100,8 +100,7 @@ DeskTop.prototype = {
             rows = (height-height%cellHeight)/cellHeight,
             columns = (width-width%cellWidth)/cellWidth,
             html = "";
-        console.log(columns)
-        console.log(rows)
+
         $.each(icons, function (index, icon) {
             if (icon.row == null || icon.column == null) return;
                 var x = icon.column * (cellWidth+width%cellWidth/(columns+1));
@@ -195,11 +194,16 @@ TaskWindow.prototype = {
             el = me.element;
 
         if(x==null||y==null){
-            var width=el.width();
-            console.log(width)
+            var width=el.width(),
+                height=el.height(),
+                Vheight=this.app.viewport.height(),
+                Vwidth=this.app.viewport.width(),          
+                newL=(Vwidth-width)/2,
+                newT=(Vheight-height)/2;
+
             el.css({
-                left: "200px",
-                top: "200px"
+                left: newL+"px",
+                top: newT+"px"
             });
         }else{
             el.css({
@@ -216,6 +220,7 @@ TaskWindow.prototype = {
 
     isMax: function () {
         return this.element.hasClass("window-max");
+        
     },
 
     isMin: function () {
@@ -244,6 +249,10 @@ TaskWindow.prototype = {
 
 
 }
+
+
+
+
 
 TaskWindow.extend = function (props, statics) {
     props = props || {};

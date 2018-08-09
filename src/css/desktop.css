@@ -166,8 +166,8 @@
 {
     position:absolute;
     background:white;
-    border:solid 1px #999;
     z-index:1000;
+    box-shadow: 0 1px 8px 0 rgba(33,43,54,.15), 0 2px 4px 0 rgba(33,43,54,.05);
 }
 
 .window-min
