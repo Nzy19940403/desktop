@@ -19,15 +19,11 @@
     </style>
 </head>
 <body>
-
     <div id="d" style="width:100%;height:100%;"></div>
-
 </body>
 </html>
 <script>
-    $(template).appendTo('body')
-    
-    
+    $(template).appendTo('body');
     var app = new DeskTop("#d", {
     backgroundImage: "images/BeachSoccerBoys_ZH-CN12914801215_1920x1080.jpg",
     icons: [
@@ -39,6 +35,7 @@
         { icon: "images/dota2.png",taskIcon:"fa fa-steam-square", text: "Dota2", name: "dota2", row: 5, column: 0 },
         { icon: "images/dota2.png",taskIcon:"fa fa-steam-square", text: "Dota2", name: "dota2", row: 0, column: 1 },
         { icon: "images/dota2.png",taskIcon:"fa fa-steam-square", text: "Dota2", name: "dota2", row: 1, column: 1 }
+        
     ],
     iconDblClick: function (event, icon) {
         if (icon.name == "qq") {
@@ -52,8 +49,10 @@
             app.regiterWindow(win);
 
             win.show();
-        }else if(icon.name=="go"){
-            
+        }else if(icon.name=="go"){   
+            alert(icon.text)    
+        }else if(icon.name=="dota2"){
+            alert(icon.text)
         }
     },
     iconClick: function (event, icon) {

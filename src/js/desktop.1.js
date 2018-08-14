@@ -18,9 +18,7 @@ DeskTop.prototype = {
     init: function () {
         var me = this,
             el = me.element,
-            opt = me.options,
-            allowdrag=false,
-            dragWin,offsetX,offsetY;
+            opt = me.options;
 
         me.windows = [];
 
@@ -63,20 +61,24 @@ DeskTop.prototype = {
             
             if (opt.iconDblClick) opt.iconDblClick.call(me, event, icon);
             
-            
         });
-        el.on("click",".toolbuttons button",function(e){
-            var jq = $(e.currentTarget);
-            var index=jq.parents(".window").index();
-            var  window = me.windows[index-1];
-            window.windowToolButton(jq)
-            // if(jq["0"].className=="max-button"){
-            //     alert(1)
-            // }
 
-        })
-        el.on("click", ".desktop-taskbar-icon", function(event) {
-            me.taskIconClick(event)
+        el.on("click", ".desktop-taskbar-icon", function (event) {
+            var jq = $(event.currentTarget),
+                index = jq.index(),         // 用数组的方式
+                window = me.windows[index];
+
+                // console.log(index)
+            //alert(window.options.icon);
+
+            //window.close();
+            //window.min();
+
+            if (window.isMin()) {
+                window.restore();
+            } else {
+                window.min();
+            }
 
 //            if (window.isMax()) {
 //                window.restore();
@@ -84,84 +86,10 @@ DeskTop.prototype = {
 //                window.max();
 //            }
         });
-        el.on("mousedown",".window .dragArea",function(e){
-            allowdrag=true
-            
-             oldx=me.dragstart(e).x;
-             oldy=me.dragstart(e).y;
-            dragWin=me.dragstart(e).mytarget;
-            offsetX=me.dragstart(e).offset.left;
-            offsetY=me.dragstart(e).offset.top;
-            // me.dragstart(e)
-            
-            
-        })
-        // setInterval(function(){
-        //     console.log(oldx,oldy)
-        // },1000)
-        el.on("mousemove",function(e){
-            if(allowdrag==false) return
-           
-            me.drag(e,dragWin,oldx,oldy,offsetX,offsetY);
-        })
-        el.on("mouseup",function(){
-            allowdrag=false
-        })
-
 
         me.tellTime()
     },
-    taskIconClick(event){
-        var jq = $(event.currentTarget),
-        me=this,
-        index = jq.index(),         // 用数组的方式
-        window = me.windows[index],
-        winL=me.windows.length;
 
-        switch(winL){
-            case 1:
-            if(window.isMin()){
-                
-                window.restore();
-            }else{
-                window.min()      
-            }
-            break;
-
-            default:
-            if (window.isMin()) {
-                window.restore();              
-            } else if(!window.isMin()&&!window.isFront()){  //window没有min并且window不在最上面的时候 
-                app.activeWindow(window);
-            }else if(!window.isMin()&&window.isFront()){  //window没有min并且window在最上面的时候
-                
-                window.min();
-
-                for(var i=winL-1;i>=0;i--){         //一共有几个taskbaricon 就遍历几次 找到没有最小化的 并让她front
-
-                    var mywin=me.windows[i].element;
-
-                    if(!$(mywin).hasClass("window-min")){
-                        $.each(me.windows, function (index, win) {
-                            win.taskBarIcon.removeClass("desktop-window-active");
-                            win.element.removeClass("front")
-                
-                        });
-
-                        me.windows[i].element.addClass("front")
-                        me.windows[i].taskBarIcon.addClass("desktop-window-active")
-                        return
-                    }
-                }
-                
-            }else{
-                window.min();
-            }
-
-            break;
-
-        }
-    },
     initIcons: function () {
         var me = this,
             html = "",
@@ -169,6 +97,33 @@ DeskTop.prototype = {
         
 
         iconPos=me.getIconPos();
+        // $.each(icons, function (index, icon) {
+        //         if (icon.row == null || icon.column == null) return;
+                
+        //         var x = icon.column * (cellWidth+width%cellWidth/(columns+1));
+        //         var y = icon.row * (cellHeight+height%cellHeight/(rows+1));
+        //         if(index+1>rows&&index+1<rows*columns){
+        //             var newrow=index%rows;
+        //             var newcol=(index-index%rows)/rows;
+        //             var y = newrow * (cellHeight+height%cellHeight/(rows+1));
+        //             var x = newcol * (cellWidth+width%cellWidth/(columns+1));
+        //         }else if(index+1>rows*columns){
+        //             alert('请调整窗口大小');     
+        //         }
+        //         // var newrow=index%rows
+        //         // console.log(newrow)
+        //         // var y = newrow * (cellHeight+height%cellHeight/(rows+1));
+        //         // if(newrow<icon.row&&index>rows-1){
+        //         //     var x = (icon.column+1) * (cellWidth+width%cellWidth/(columns+1));
+             
+        //         // }
+        //         // var x = icon.column * (cellWidth+width%cellWidth/(columns+1));
+        //         html += '<div class="desktop-icon" style="left:' + x + 'px;top:' + y + 'px;"><image class="desktop-icon-image" src="';
+        //         html += icon.icon;
+        //         html += '"/><div class="desktop-icon-text">';
+        //         html += icon.text;
+        //         html += '</div></div>';
+        // });
         $.each(iconPos,function(index,i){
             html += '<div class="desktop-icon" style="left:' + i.Pos.x + 'px;top:' + i.Pos.y + 'px;"><image class="desktop-icon-image" src="';
             html += i.iconPage;
@@ -180,7 +135,7 @@ DeskTop.prototype = {
         me.iconWrapper.html(html);
 
     },
-    getIconCoordinate:function(x,y){
+    getIconCoor:function(x,y){
         //获得调整后的新的坐标row/ col
     },
     getIconPos:function(){
@@ -241,46 +196,19 @@ DeskTop.prototype = {
     },
 
     unregisterWindow: function (window) {
-
-        // var index=window.element.index()
-        // this.windows.splice(index,1)
-        // console.log(this.windows)
-        this.windows.remove(window); // ?????????????????????????????????
-        
+        this.windows.remove(window);
         window.element.remove();
         window.taskBarIcon.remove();
-        
     },
 
     activeWindow: function (window) {
         this.activeWindw = window;
+
         $.each(this.windows, function (index, win) {
             win.taskBarIcon.removeClass("desktop-window-active");
-            win.element.removeClass("front")
         });
 
-        window.taskBarIcon.addClass("desktop-window-active");
-        window.element.addClass("front")
-    },
-    drag:function(e,dragWin,oldx,oldy,offsetX,offsetY){
-        var x,y,newx,newy;
-        newx=e.clientX;
-        newy=e.clientY;
-        x=newx-oldx+offsetX;
-        y=newy-oldy+offsetY;
-        
-        // console.log(offset.left,offset.top)
-
-        dragWin.css({'left':x,'top':y});
-
-    },
-    dragstart:function(e){
-        var x,y,mytarget,offset;
-        x=e.clientX;
-        y=e.clientY;
-        mytarget=$(e.currentTarget).parents(".window");
-        offset=mytarget.offset()
-        return {x,y,mytarget,offset}    
+        window.taskBarIcon.removeClass("desktop-window-active");
     }
 
 }
@@ -300,18 +228,12 @@ TaskWindow.prototype = {
 
     init: function () {
         var me = this,
-            opt = me.options,
-            allowdrag=false;
+            opt = me.options;
 
-        var win=me.element = $('<div class="window"></div>');
+        me.element = $('<div class="window"></div>');
 
         me.element.css("width", opt.width + "px");
         me.element.css("height", opt.height + "px");
-        me.time=$('<div>'+Date.now()+'</div>').appendTo(win);
-        me.toolbuttons=$('<div class="toolbuttons"><button class="max-button">max</button><button class="min-button">min</button><button class="close-button">close</button></div>').appendTo(win);
-        me.dragArea=$('<div class="dragArea">按住这里拖动</div>').appendTo(win)
-        
-       
         //...
 
     },
@@ -364,66 +286,22 @@ TaskWindow.prototype = {
     },
     restore: function () {
         // this.element.removeClass("window-max");
-        $.each(this.app.windows, function (index, win) {
-            win.taskBarIcon.removeClass("desktop-window-active");
-            win.element.removeClass("front")
-        });
-
-        this.element.fadeIn().removeClass("window-min").addClass("front");
-        this.taskBarIcon.addClass("desktop-window-active")
+        this.element.removeClass("window-min");
     },
 
     min: function () {
-        // this.element.removeClass("window-max");
+        this.element.removeClass("window-max");
         this.element.addClass("window-min");
-        this.element.removeClass("front");
-        this.taskBarIcon.removeClass("desktop-window-active");
-
     },
 
     max: function () {
         this.element.removeClass("window-min");
-        this.element.toggleClass("window-max");
+        this.element.addClass("window-max");
     },
+
     close: function () {
         this.app.unregisterWindow(this);
-    },
-    windowToolButton:function(e){
-        var cls=e["0"].className;
-        switch (cls){
-            case "max-button":
-            this.max();
-            break;
-            case "min-button":
-            this.min();
-            var index=this.app.windows.length;
-            if(index>1){
-                for(var i=index-1;i>=0;i--){         //一共有几个taskbaricon 就遍历几次 找到没有最小化的 并让她front
-
-                    var mywin=this.app.windows[i].element;
-
-                    if(!$(mywin).hasClass("window-min")){
-                        $.each(this.app.windows, function (index, win) {
-                            win.taskBarIcon.removeClass("desktop-window-active");
-                            win.element.removeClass("front")
-                
-                        });
-
-                        this.app.windows[i].element.addClass("front")
-                        this.app.windows[i].taskBarIcon.addClass("desktop-window-active")
-                        return
-                    }
-                }
-            }
-            break;
-            case "close-button":
-            this.close()
-            
-            break;
-        }
-        
     }
-    
 
 
 
