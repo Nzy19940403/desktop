@@ -1,4 +1,9 @@
 
+
+document.write("<script type=\"text/javascript\" src=\"src/js/desktop.js\"></script>");
+
+document.write("<link rel=\"stylesheet\" href=\"src/css/desktop.css\" type=\"text/css\" />"); 
+document.write("<link rel=\"stylesheet\" href=\"src/css/windowCommon.css\" type=\"text/css\" />"); 
     var template,
         num=Math.random(),
         height=($(window).height()-150)/2;

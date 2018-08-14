@@ -19,7 +19,7 @@
     left:0;
     bottom:50px;
     right:0;
-    overflow:hidden;
+    /* overflow:hidden; */
     z-index:190;
 }
 
@@ -121,7 +121,7 @@
 
 .desktop-icon-image
 {
-    width:100%;
+    width:95%;
     height:64px;
     overflow:hidden;
 }
@@ -162,37 +162,3 @@
 }
 
 
-.window
-{
-    position:absolute;
-    background:white;
-    z-index:1000;
-    box-shadow: 0 1px 8px 0 rgba(33,43,54,.15), 0 2px 4px 0 rgba(33,43,54,.05);
-}
-.window.front{
-    z-index: 2000;
-}
-.window-min
-{
-    display:none !important;
-}
-
-.window-max
-{
-    left:0px !important;
-    top:0px !important;
-    width:100% !important;
-    height:100% !important;
-}
-
-
-.dragArea{
-    background: #666;
-    height: 60px;
-    color: #fff;
-    text-align: center;
-    line-height: 60px;
-    font-size: 20px;
-    cursor: pointer;
-    user-select: none;
-}

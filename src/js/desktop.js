@@ -58,9 +58,7 @@ DeskTop.prototype = {
         el.on("dblclick", ".desktop-icon", function (event) {
             var jq = $(event.currentTarget),
                 index = jq.index(),
-                icon = opt.icons[index];
-            
-            
+                icon = opt.icons[index];      
             if (opt.iconDblClick) opt.iconDblClick.call(me, event, icon);
             
             
@@ -70,11 +68,7 @@ DeskTop.prototype = {
             var index=jq.parents(".window").index();
             var  window = me.windows[index-1];
             window.windowToolButton(jq)
-            // if(jq["0"].className=="max-button"){
-            //     alert(1)
-            // }
-
-        })
+        });
         el.on("click", ".desktop-taskbar-icon", function(event) {
             me.taskIconClick(event)
 
@@ -84,34 +78,42 @@ DeskTop.prototype = {
 //                window.max();
 //            }
         });
+        el.on("mousedown",".window",function(e){
+            var index =$(e.currentTarget).index();
+
+
+            var selectedWin=me.windows[index-1]
+
+            me.activeWindow(selectedWin)
+        })
         el.on("mousedown",".window .dragArea",function(e){
             allowdrag=true
             
-             oldx=me.dragstart(e).x;
-             oldy=me.dragstart(e).y;
-            dragWin=me.dragstart(e).mytarget;
-            offsetX=me.dragstart(e).offset.left;
-            offsetY=me.dragstart(e).offset.top;
-            // me.dragstart(e)
+            oldx=me.windowDragstart(e).x;
+            oldy=me.windowDragstart(e).y;
+            dragWin=me.windowDragstart(e).mytarget;
+            offsetX=me.windowDragstart(e).offset.left;
+            offsetY=me.windowDragstart(e).offset.top;
             
-            
-        })
-        // setInterval(function(){
-        //     console.log(oldx,oldy)
-        // },1000)
+            // var index =dragWin.index();
+            // var selectwin=me.windows[index-1]
+            // console.log(selectwin)
+            // me.activeWindow(selectwin)
+        });
+
         el.on("mousemove",function(e){
             if(allowdrag==false) return
            
-            me.drag(e,dragWin,oldx,oldy,offsetX,offsetY);
-        })
+            me.windowDrag(e,dragWin,oldx,oldy,offsetX,offsetY);
+        });
         el.on("mouseup",function(){
             allowdrag=false
-        })
+        });
 
 
         me.tellTime()
     },
-    taskIconClick(event){
+    taskIconClick:function(event){
         var jq = $(event.currentTarget),
         me=this,
         index = jq.index(),         // 用数组的方式
@@ -213,9 +215,9 @@ DeskTop.prototype = {
                 }
                 
                 var iconPage=icon.icon,
-                    Pos={x,y}
+                    Pos={x:x,y:y},
                     text=icon.text;
-                iconPos.push({Pos,iconPage,text})
+                iconPos.push({Pos:Pos,iconPage:iconPage,text:text})
             });    
             return iconPos;
 
@@ -233,9 +235,7 @@ DeskTop.prototype = {
 
         me.windows.push(window);
         me.viewport.append(window.element);
-
         window.app = me;
-
         window.taskBarIcon = $('<div class="desktop-taskbar-icon"><i class="'+window.options.taskIcon+'"></i></div>').appendTo(me.taskbar);
     
     },
@@ -262,7 +262,7 @@ DeskTop.prototype = {
         window.taskBarIcon.addClass("desktop-window-active");
         window.element.addClass("front")
     },
-    drag:function(e,dragWin,oldx,oldy,offsetX,offsetY){
+    windowDrag:function(e,dragWin,oldx,oldy,offsetX,offsetY){
         var x,y,newx,newy;
         newx=e.clientX;
         newy=e.clientY;
@@ -274,13 +274,16 @@ DeskTop.prototype = {
         dragWin.css({'left':x,'top':y});
 
     },
-    dragstart:function(e){
+    windowDragstart:function(e){
         var x,y,mytarget,offset;
         x=e.clientX;
         y=e.clientY;
         mytarget=$(e.currentTarget).parents(".window");
-        offset=mytarget.offset()
-        return {x,y,mytarget,offset}    
+        offset=mytarget.offset();
+        return {x:x,y:y,mytarget:mytarget,offset:offset}    
+    },
+    selectWinByClick:function(){
+
     }
 
 }
@@ -295,7 +298,8 @@ TaskWindow.prototype = {
     options: {
         icon: "",
         width: 300,
-        height: 200             //
+        height: 200,
+        dragTitle:null          //
     },
 
     init: function () {
@@ -307,9 +311,8 @@ TaskWindow.prototype = {
 
         me.element.css("width", opt.width + "px");
         me.element.css("height", opt.height + "px");
-        me.time=$('<div>'+Date.now()+'</div>').appendTo(win);
-        me.toolbuttons=$('<div class="toolbuttons"><button class="max-button">max</button><button class="min-button">min</button><button class="close-button">close</button></div>').appendTo(win);
-        me.dragArea=$('<div class="dragArea">按住这里拖动</div>').appendTo(win)
+        me.toolbuttons=$('<div class="toolbuttons"><button class="min-button"><i class="fa fa-minus"></i></button><button class="max-button"><i class="fa fa-square-o"></i></button><button class="close-button"><i class="fa fa-close"></i></button></div>').appendTo(win);
+        me.dragArea=$('<div class="dragArea"><span>'+opt.dragTitle+'</span></div>').appendTo(win)
         
        
         //...
@@ -359,7 +362,7 @@ TaskWindow.prototype = {
     },
     clearFront:function(){
         $.each(this.app.windows,function(index,win){
-            win.element.removeClass("front")
+            win.element.removeClass("front");
         })
     },
     restore: function () {
@@ -388,6 +391,63 @@ TaskWindow.prototype = {
     close: function () {
         this.app.unregisterWindow(this);
     },
+    AutoPickWinAfterMin:function(index){
+        if(index>1){
+            for(var i=index-1;i>=0;i--){         //一共有几个taskbaricon 就遍历几次 找到没有最小化的 并让她front
+
+                var mywin=this.app.windows[i].element;
+
+                if(!$(mywin).hasClass("window-min")){
+                    $.each(this.app.windows, function (index, win) {
+                        win.taskBarIcon.removeClass("desktop-window-active");
+                        win.element.removeClass("front")
+            
+                    });
+
+                    this.app.windows[i].element.addClass("front")
+                    this.app.windows[i].taskBarIcon.addClass("desktop-window-active")
+                    return
+                }
+            }
+        }
+    },
+    AutoPickWinAfterClose:function(index){
+        switch (index){
+            case "0":
+            
+            break;
+
+            case "1":
+            var mywin=this.app.windows[0];
+            if(!$(mywin.element).hasClass("window-min")){
+                mywin.element.addClass("front");
+                mywin.taskBarIcon.addClass("desktop-window-active")
+
+            }
+            break;
+
+            default:
+            for(var i=index-1;i>=0;i--){         //一共有几个taskbaricon 就遍历几次 找到没有最小化的 并让她front
+
+                var mywin=this.app.windows[i].element;
+
+                if(!$(mywin).hasClass("window-min")){
+                    $.each(this.app.windows, function (index, win) {
+                        win.taskBarIcon.removeClass("desktop-window-active");
+                        win.element.removeClass("front")
+            
+                    });
+
+                    this.app.windows[i].element.addClass("front")
+                    this.app.windows[i].taskBarIcon.addClass("desktop-window-active")
+                    return
+                }
+            }
+            break;
+        }
+
+        
+    },
     windowToolButton:function(e){
         var cls=e["0"].className;
         switch (cls){
@@ -396,29 +456,15 @@ TaskWindow.prototype = {
             break;
             case "min-button":
             this.min();
+            
             var index=this.app.windows.length;
-            if(index>1){
-                for(var i=index-1;i>=0;i--){         //一共有几个taskbaricon 就遍历几次 找到没有最小化的 并让她front
-
-                    var mywin=this.app.windows[i].element;
-
-                    if(!$(mywin).hasClass("window-min")){
-                        $.each(this.app.windows, function (index, win) {
-                            win.taskBarIcon.removeClass("desktop-window-active");
-                            win.element.removeClass("front")
-                
-                        });
-
-                        this.app.windows[i].element.addClass("front")
-                        this.app.windows[i].taskBarIcon.addClass("desktop-window-active")
-                        return
-                    }
-                }
-            }
+            this.AutoPickWinAfterMin(index)
+          
             break;
             case "close-button":
             this.close()
-            
+            var index=this.app.windows.length;
+            this.AutoPickWinAfterClose(index);  
             break;
         }
         
@@ -462,3 +508,125 @@ TaskWindow.extend = function (props, statics) {
 
 
 
+///////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////////////
+// Array
+////////////////////////////////////////////////////////////////////////////////////////
+var ap = Array.prototype;
+$.extend(ap, {
+    add: ap.enqueue = function (item) {
+        this[this.length] = item;
+        return this;
+    },
+    addRange: function (array) {
+        for (var i = 0, j = array.length; i < j; i++) this[this.length] = array[i];
+        return this;
+    },
+    clear: function () {
+        this.length = 0;
+        return this;
+    },
+    clone: function () {
+        if (this.length === 1) {
+            return [this[0]];
+        }
+        else {
+            return Array.apply(null, this);
+        }
+    },
+    contains: function (item) {
+        return (this.indexOf(item) >= 0);
+    },
+    indexOf: ap.indexOf || function (item, from) {
+        var len = this.length;
+        for (var i = (from < 0) ? Math.max(0, len + from) : from || 0; i < len; i++) {
+            if (this[i] === item) return i;
+        }
+        return -1;
+    },
+    dequeue: function () {
+        return this.shift();
+    },
+    insert: function (index, item) {
+        this.splice(index, 0, item);
+        return this;
+    },
+    insertRange: function (index, items) {
+        if (index < 0 || index > this.length) index = this.length;
+        for (var i = items.length - 1; i >= 0; i--) {
+            var item = items[i];
+            this.splice(index, 0, item);
+        }
+        return this;
+    },
+    remove: function (item) {
+        var index = this.indexOf(item);
+        if (index >= 0) {
+            this.splice(index, 1);
+        }
+        return (index >= 0);
+    },
+    removeAt: function (index) {
+        var ritem = this[index];
+        this.splice(index, 1);
+        return ritem;
+    },
+    removeRange: function (items) {
+        items = items.clone();
+        //if (items == this) items = items.clone();
+        for (var i = 0, l = items.length; i < l; i++) {
+            this.remove(items[i]);
+        }
+    },
+    filter: ap.filter || function (fn, scope) {
+        var scope = scope || window,
+        i = 0,
+        l = this.length,
+        results = [],
+        o;
+        for (; i < l; i++) {
+            o = this[i];
+            if (fn.call(scope, o, i, this)) {
+                results.push(o);
+            }
+        }
+        return results;
+    },
+    map: ap.map || function (fn, scope) {
+        var scope = scope || window,
+        i = 0,
+        l = this.length,
+        results = [];
+        for (; i < l; i++) {
+            results[i] = fn.call(scope, this[i], i, this);
+        }
+        return results;
+    },
+    some: ap.some || function (fn, scope) {
+        var scope = scope || window,
+        i = 0,
+        l = this.length;
+        for (; i < l; i++) {
+            if (fn.call(scope, this[i], i, this)) return true;
+        }
+        return false;
+    },
+    every: ap.every || function (fn, scope) {
+        var scope = scope || window,
+        i = 0,
+        l = this.length;
+        for (; i < l; i++) {
+            if (!fn.call(scope, this[i], i, this)) return false;
+        }
+        return true;
+    },
+    forEach: ap.forEach || function (fn, scope) {
+        var scope = scope || window,
+            i = 0,
+            l = this.length;
+        for (; i < l; i++) {
+            fn.call(scope, this[i], i, this);           //Array.prototype.forEach是无法跳出循环的。return false也不行。
+        }
+    }
+});

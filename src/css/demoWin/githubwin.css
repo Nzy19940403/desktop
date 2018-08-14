@@ -1,0 +1,25 @@
+.desktop-taskbar-icon > i.fa-github{
+    font-size: 35px;
+}
+
+
+.GithubWindow .dragArea{
+    height: 30px;
+    line-height: 30px; 
+    background: #24292e;
+    border-bottom: 1px solid #000;
+}
+.GithubWindow .toolbuttons button{
+    height:30px;
+    width: 42px;
+    margin-left: 3px;
+    color: #fff;
+}
+.GithubWindow .toolbuttons button i{
+    font-size: 16px;
+}
+
+.GithubWindow .repo-select-bar{
+    height: 50px;
+    background: #24292e;
+}

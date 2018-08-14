@@ -1,0 +1,26 @@
+.qqwindow .dragArea{
+    height: 40px;
+    line-height: 40px;
+
+    background: -webkit-linear-gradient(left,#4c8cfe,#1fd2ff);
+    background: -moz-linear-gradient(left,#4c8cfe,#1fd2ff);
+    background: -o-linear-gradient(left,#4c8cfe,#1fd2ff);
+    background: -ms-linear-gradient(left,#4c8cfe,#1fd2ff);
+    background: linear-gradient(left,#4c8cfe,#1fd2ff);
+}
+
+.qqwindow .toolbuttons{
+    right: 0px;
+}
+.qqwindow .toolbuttons button{
+    color: #fff;
+    width: 30px;
+    height: 30px;
+    margin-left: 3px;
+}
+.qqwindow .toolbuttons button:hover{
+    background: #50d8fe;
+}
+.qqwindow .toolbuttons .close-button:hover{
+    background: #ff5439;
+}

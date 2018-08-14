@@ -1,0 +1,52 @@
+.window
+{
+    position:absolute;
+    background:white;
+    z-index:1000;
+    box-shadow: 0 1px 8px 0 rgba(33,43,54,.65), 0 2px 4px 0 rgba(33,43,54,.05);
+    border-radius: 3px;
+}
+.window.front{
+    z-index: 2000;
+}
+.window-min
+{
+    display:none !important;
+}
+
+.window-max
+{
+    left:0px !important;
+    top:0px !important;
+    width:100% !important;
+    height:100% !important;
+}
+
+.window .dragArea span{
+    cursor: pointer;
+}
+.dragArea{
+    background: #666;
+    height: 60px;
+    color: #fff;
+    text-align: center;
+    line-height: 60px;
+    font-size: 20px;
+    cursor: default;
+    user-select: none;
+}
+.window .toolbuttons{
+    position: absolute;
+}
+.window.window-max .toolbuttons .max-button i::before{
+    content: "\f24d";
+}
+.window .toolbuttons{
+    right: 0px;
+}
+.window .toolbuttons button{
+    outline: none;
+    border:none;
+    background: transparent;
+    cursor: default;
+}

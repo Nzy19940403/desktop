@@ -1,0 +1,41 @@
+.ChromeWindow .dragArea{
+    height: 40px;
+    line-height: 40px;
+    background: #cd635f;
+}
+.ChromeWindow .framwrap{
+    position: absolute;
+    top: 40px;
+    bottom: 0px;
+    right: 0px;
+    left: 0px;
+}
+.ChromeWindow.front .toolbuttons .user-button{
+    background: #8f4542;
+}
+.ChromeWindow .toolbuttons .user-button{
+    background: #a1a1a1;
+}
+.ChromeWindow .toolbuttons button{
+    width: 30px;
+    height: 30px;
+    margin-left: 3px;
+    color: #fff;
+}
+.ChromeWindow.front .toolbuttons .close-button{
+    background: #c75050;
+}
+.ChromeWindow .toolbuttons .close-button{
+    background: #a1a1a1;
+    width: 50px;
+}
+.ChromeWindow .toolbuttons button:hover{
+    background: #3665b3;
+}
+.ChromeWindow .toolbuttons .close-button:hover{
+    background: #ff5439;
+}
+.ChromeWindow .toolbuttons .max-button,
+.ChromeWindow .toolbuttons .min-button{
+    color: #000;
+}
