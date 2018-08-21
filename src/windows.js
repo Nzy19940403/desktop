@@ -49,7 +49,7 @@ var GithubWindow = TaskWindow.extend({
         me.githubNavInit();
         //....
         el.on('click','.currentRepo',function(e){
-            $(e.currentTarget).toggleClass('active');
+            me.showRepoByClick(e);
         })
 
     }, 
@@ -65,6 +65,9 @@ var GithubWindow = TaskWindow.extend({
                         '</div>'
 
             return template
+    },
+    showRepoByClick:function(e){
+        $(e.currentTarget).toggleClass('active')
     },
   
     //menu的组件化
