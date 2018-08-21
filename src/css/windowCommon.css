@@ -1,10 +1,22 @@
 .window
 {
     position:absolute;
-    background:white;
-    z-index:1000;
-    box-shadow: 0 1px 8px 0 rgba(33,43,54,.65), 0 2px 4px 0 rgba(33,43,54,.05);
+    z-index:100;
     border-radius: 3px;
+    padding: 3px;
+    
+}
+.window.window-max{
+    padding: 0px;
+}
+.content-wrap{
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background:#fff;
+    box-shadow: 0 1px 8px 0 rgba(33,43,54,.65), 0 2px 4px 0 rgba(33,43,54,.05);
+    z-index: 1000;
+    cursor: default;
 }
 .window.front{
     z-index: 2000;
@@ -49,4 +61,69 @@
     border:none;
     background: transparent;
     cursor: default;
+}
+
+
+
+
+
+
+
+/* menu */
+.window .menu{
+    position: absolute;
+    top: 29px;
+    z-index: 10000;
+    left: 20px;
+    background: #fff;
+    min-width: 200px;
+}
+
+.window .menu .optionWrap{
+    padding: 4px 0px;
+    overflow: hidden;
+    background: #fff;
+    cursor: default;
+}
+.window .menu .optionWrap div{
+    height: 100%;
+    overflow: hidden;
+    padding: 4px 10px;
+}
+.window .nav-func-text{
+    float: left;
+    margin-right: 10px;
+    user-select: none;
+}
+.window .shortcut{
+    float: right;
+    user-select: none;
+}
+.window .menu div.split{
+    border-top:1px solid #ddd;
+}
+.window .menu .optionWrap:hover div{
+    background: #0366d6;
+    
+}
+.window .menu .optionWrap:hover div .nav-func-text,
+.window .menu .optionWrap:hover div .shortcut{
+    color:#fff ;
+}
+.window .menu.hide{
+    display: none;
+}
+.window .nav>div.open{
+    background: #fff;
+    color: #333;
+}
+.window .nav>div{
+    user-select: none;
+}
+.optionWrap.forbid .nav-func-text,
+.optionWrap.forbid .shortcut{
+    color: #bdbec0 !important;
+}
+.optionWrap.forbid div{
+    background: #fff !important;
 }

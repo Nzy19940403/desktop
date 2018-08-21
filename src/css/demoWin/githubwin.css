@@ -2,7 +2,9 @@
     font-size: 35px;
 }
 
-
+.GithubWindow .content-wrap{
+    background: #fff url(../../../images/github-back.png) no-repeat 50% 23%;
+}
 .GithubWindow .dragArea{
     height: 30px;
     line-height: 30px; 
@@ -22,4 +24,100 @@
 .GithubWindow .repo-select-bar{
     height: 50px;
     background: #24292e;
+}
+.GithubWindow .toolbuttons button:hover{
+    background: #888;
+}
+.GithubWindow .toolbuttons .close-button:hover{
+    background: #ff5439;
+}
+
+.github-nav{
+    width: 350px;
+    height: 29px;
+    position: absolute;
+    top: 0px;
+    line-height: 30px;
+    padding-left: 40px;
+}
+.github-nav::before{
+    content: '';
+    width: 30px;
+    height: 24px;
+    background: url(../../../images/github-nav-logo.png) no-repeat 100% 0%;
+    position: absolute;
+    left: 10px;
+    overflow: hidden;
+}
+.github-nav div{
+    float: left;
+    height: 100%;
+    padding: 0px 6px;
+    color: #fff;
+    font-size: 13px;
+}
+.github-nav div:hover{
+    background: rgb(47, 54, 61)
+}
+.GithubWindow .content{
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    top: 80px;
+}
+
+.GithubWindow .currentRepo{
+    width: 250px;
+    height: 100%;
+    display: inline-block;
+    border-right: 1px solid #000;
+}
+.GithubWindow .mask{
+    position: absolute;
+    top: 30px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    display: none;
+    background: rgba(33,43,54,.5);
+    z-index: 5000;
+}
+.GithubWindow .mask.active{
+    display: block;
+}
+.GithubWindow .currentRepo span{
+    position: absolute;
+    font-size: 13px;
+}
+.GithubWindow .currentRepo:before{
+    content: '';
+    height:20px;
+    width: 20px;
+    background: url(../../../images/current-repo.png) no-repeat 100% 50%;
+    position: absolute;
+    left: 5px;
+    top: 45px;
+    
+}
+.GithubWindow .currentRepo::after{
+    content: '';
+    width:0;
+    height:0;
+    border-width:6px 6px 0;
+    border-style:solid;
+    border-color:#fff transparent transparent;/*灰 透明 透明 */
+    position: absolute;
+    left:220px;
+    top: 50px;
+}
+.repo-title{
+    left: 30px;
+    top: 35px;
+    color: #ddd;
+}
+.repo-info{
+    left: 30px;
+    top: 54px;
+    color: #fff;
 }

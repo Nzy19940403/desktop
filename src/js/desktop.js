@@ -20,7 +20,7 @@ DeskTop.prototype = {
             el = me.element,
             opt = me.options,
             allowdrag=false,
-            dragWin,offsetX,offsetY;
+            dragWin,offsetX,offsetY,resizeX,resizeY;
 
         me.windows = [];
 
@@ -80,38 +80,46 @@ DeskTop.prototype = {
         });
         el.on("mousedown",".window",function(e){
             var index =$(e.currentTarget).index();
-
-
             var selectedWin=me.windows[index-1]
-
             me.activeWindow(selectedWin)
         })
+
+
+
+        //拖拽事件
         el.on("mousedown",".window .dragArea",function(e){
             allowdrag=true
-            
             oldx=me.windowDragstart(e).x;
             oldy=me.windowDragstart(e).y;
             dragWin=me.windowDragstart(e).mytarget;
             offsetX=me.windowDragstart(e).offset.left;
             offsetY=me.windowDragstart(e).offset.top;
-            
-            // var index =dragWin.index();
-            // var selectwin=me.windows[index-1]
-            // console.log(selectwin)
-            // me.activeWindow(selectwin)
         });
-
         el.on("mousemove",function(e){
-            if(allowdrag==false) return
-           
+            if(allowdrag==false) return    
             me.windowDrag(e,dragWin,oldx,oldy,offsetX,offsetY);
         });
+
         el.on("mouseup",function(){
             allowdrag=false
         });
 
 
-        me.tellTime()
+
+        el.on("click",".desktop-startbutton",function(){
+            loading.testfunc();
+        })
+
+
+
+
+        el.on("mousedown",".window",function(e){
+            var x,y;
+            x=me.getClient(e).x;
+            y=me.getClient(e).y;
+            console.log(x,y)
+        })
+        me.tellTime();
     },
     taskIconClick:function(event){
         var jq = $(event.currentTarget),
@@ -224,11 +232,37 @@ DeskTop.prototype = {
 
     },
     tellTime:function(){
+        var me=this
+        setInterval(function(){
+            me.time();
+        },1000)
+        
+    },
+    time:function(){
         var me=this,
             html='';
         html+='<div class="timeTeller"></div>';
-        html+='<div class="yearTeller"></div>'
+        html+='<div class="yearTeller"></div>';
         me.timebar.html(html)
+        function p(s) {
+            return s < 10 ? '0' + s: s;
+        }
+        var myDate = new Date();
+        //获取当前年
+        var year=myDate.getFullYear();
+        //获取当前月
+        var month=myDate.getMonth()+1;
+        //获取当前日
+        var date=myDate.getDate(); 
+        var h=myDate.getHours();       //获取当前小时数(0-23)
+        var m=myDate.getMinutes();     //获取当前分钟数(0-59)
+        var s=myDate.getSeconds();  
+        
+        var now1=year+'-'+p(month)+"-"+p(date)
+        var now2=p(h)+':'+p(m)+":"+p(s);
+        $('.timeTeller').html(now2)
+        $('.yearTeller').html(now1)
+
     },
     regiterWindow: function (window) {
         var me = this;
@@ -253,7 +287,8 @@ DeskTop.prototype = {
     },
 
     activeWindow: function (window) {
-        this.activeWindw = window;
+        this.activedWindow = window;
+
         $.each(this.windows, function (index, win) {
             win.taskBarIcon.removeClass("desktop-window-active");
             win.element.removeClass("front")
@@ -282,8 +317,17 @@ DeskTop.prototype = {
         offset=mytarget.offset();
         return {x:x,y:y,mytarget:mytarget,offset:offset}    
     },
-    selectWinByClick:function(){
+    startButtonClick:function(){
 
+    },
+    winResize:function(){
+
+    },
+    getClient:function(e){
+        var x,y;
+        x=e.clientX;
+        y=e.clientY;
+        return {x:x,y:y}
     }
 
 }
@@ -308,11 +352,11 @@ TaskWindow.prototype = {
             allowdrag=false;
 
         var win=me.element = $('<div class="window"></div>');
-
+        var wincontentWrap=me.element.contentwrap=$('<div class="content-wrap"></div>').appendTo(win)
         me.element.css("width", opt.width + "px");
         me.element.css("height", opt.height + "px");
-        me.toolbuttons=$('<div class="toolbuttons"><button class="min-button"><i class="fa fa-minus"></i></button><button class="max-button"><i class="fa fa-square-o"></i></button><button class="close-button"><i class="fa fa-close"></i></button></div>').appendTo(win);
-        me.dragArea=$('<div class="dragArea"><span>'+opt.dragTitle+'</span></div>').appendTo(win)
+        me.toolbuttons=$('<div class="toolbuttons"><button class="min-button"><i class="fa fa-minus"></i></button><button class="max-button"><i class="fa fa-square-o"></i></button><button class="close-button"><i class="fa fa-close"></i></button></div>').appendTo(wincontentWrap);
+        me.dragArea=$('<div class="dragArea"><span>'+opt.dragTitle+'</span></div>').appendTo(wincontentWrap)
         
        
         //...
@@ -630,3 +674,5 @@ $.extend(ap, {
         }
     }
 });
+
+

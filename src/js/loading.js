@@ -87,9 +87,8 @@ document.write("<link rel=\"stylesheet\" href=\"src/css/windowCommon.css\" type=
         }
 
     
-   
-
-    // $('#loadMask').delay(5000).hide(0);  
+    
+    
 
     document.onreadystatechange = completeLoading; 
 
