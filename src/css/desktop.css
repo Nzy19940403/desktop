@@ -169,3 +169,145 @@
 }
 
 
+
+
+/* startmenu */
+
+.start-menu{
+    position: fixed;
+    left: 0px;
+    height: 100%;
+    z-index: 1000;
+    bottom: 50px;
+    width: 820px;
+
+    background: rgba(0,0,0,.8);
+    max-height:43em;
+    font-size: 14px;
+    display: none;
+    flex-direction: row;
+}
+.start-menu.active{
+    display:flex;
+    display: -webkit-flex; /* Safari */
+    animation: fade-and-slide .4s;
+    -moz-animation: fade-and-slide .4s;	/* Firefox */
+    -webkit-animation: fade-and-slide .4s;	/* Safari 和 Chrome */
+    -o-animation: fade-and-slide .4s;	/* Opera */
+}
+.start-menu.active .sidebar {
+    position: relative;
+    display: flex;
+    display: -webkit-flex; /* Safari */
+    flex-direction: column;
+    height: 100%;
+    width: 25em;
+    padding:2em 0px;
+    color: white;
+    animation: .4s fade-and-slide;
+    flex-grow: 0;
+}
+.start-menu.active .appview {
+    display: flex;
+    display: -webkit-flex; /* Safari */
+    flex-direction:column;
+    flex-wrap: wrap;
+    align-content: space-around;
+    margin: auto;
+    padding-top: .9em;
+    padding-bottom: 1em;
+    padding-left: 1em;
+    height: 90%;
+    width: 100%;
+    overflow: auto;
+    animation: .4s fade-and-slide;
+}
+@keyframes fade-and-slide{
+    0%{
+        transform: translateY(5em);
+        opacity:0.1;
+    }
+    100%{
+        opacity:1
+    }
+}
+@-webkit-keyframes fade-and-slide{ /* Safari and Chrome */
+    0%{
+        transform: translateY(5em);
+        opacity:0.1;
+    }
+    100%{
+        opacity:1
+    }
+}
+
+.sidebarButton {
+    display: flex;
+    display: -webkit-flex; /* Safari */
+    height: 3em;
+    line-height: 3em;
+    cursor: default;
+    font-size: 15px;
+}
+.sidebarButton:hover{
+    background: rgb(108, 104, 108)
+}
+.sidebarButton i{
+    height: 100%;
+    width: 45px;
+    text-align: center;
+    line-height: 45px;
+    font-size: 28px;
+    margin-left: 10px;
+}
+.appHolder {
+    display: flex;
+    display: -webkit-flex; /* Safari */
+    flex-wrap: wrap;
+    max-width: 19.2em;
+}
+.appSection{
+    z-index: 5;
+}
+.appSection p{
+    color: #fff;
+    margin-left: 1.5em;
+    font-size: 15px;
+    cursor: default;
+}
+.appSection .app{
+    height: 6em;
+    width: 6em;
+    margin: .2em;
+    background: dodgerblue;
+    list-style: none;
+    text-align: center;
+    color: white;
+    border: 2px solid dodgerblue;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+.appSection .app.big{
+    width: 12.4em;
+    flex-direction: row;
+    line-height: 80px;
+    
+}
+.appSection .app:hover{
+    border: 2px solid #fff;
+}
+.app i{
+    line-height: 45px;
+    font-size: 30px;
+}
+.app span{
+    font-size: 16px;
+    
+}
+.app.big i{
+    line-height: 80px;
+    margin-left: 30px;
+    margin-right: 10px;
+}

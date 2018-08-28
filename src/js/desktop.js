@@ -43,9 +43,55 @@ DeskTop.prototype = {
         me.searchbar = $('<div class="desktop-searchbar"></div>').appendTo(toolbar);
         me.taskbar = $('<div class="desktop-taskbar"></div>').appendTo(toolbar);
         me.timebar = $('<div class="desktop-timebar"></div>').appendTo(toolbar);
-
         me.iconWrapper = $('<div class="desktop-icon-wrapper"></div>').appendTo(me.viewport);
-        
+
+
+        var startmenu=new StartMenu(el,{
+            sidebar:[
+                {text:'WebDesktop',icon:'fa-address-book-o'},
+                {text:'Explorer',icon:'fa-folder'},
+                {text:'Settings',icon:'fa-cog '},
+                {text:'Power',icon:'fa-power-off'}
+            ],
+            appview:{
+                mainApp:[
+                    {text:'facebook',icon:' fa-facebook-square',cell:1},
+                    {text:'twitter',icon:'fa-twitter-square',cell:1},
+                    {text:'google',icon:'fa-google-plus-square',cell:1},
+                    {text:'gmail',icon:'fa-envelope-o',cell:1},
+                    {text:'yahoo',icon:'fa-hacker-news',cell:1},
+                    {text:'outlook',icon:'fa-envelope-o',cell:1},
+                    {text:'amazon',icon:'fa-amazon',cell:1},
+                    {text:'youtube',icon:' fa-youtube-play',cell:2},
+                    {text:'viadeo',icon:' fa-viadeo-square',cell:1},
+                    {text:'xing',icon:'fa-xing-square',cell:1},
+                    {text:'wpforms',icon:'fa-wpforms',cell:1},
+                    {text:'wordpress',icon:'fa-wordpress',cell:1},
+                    {text:'yelp',icon:'fa-yelp',cell:1},
+                    {text:'whatsapp',icon:'fa-whatsapp',cell:1}
+                ],
+                generalApp:[
+                    {text:'wikipedia',icon:'fa-wikipedia-w',cell:2},
+                    {text:'vimeo',icon:'fa-vimeo-square ',cell:1},
+                    {text:'jcb',icon:'fa-cc-jcb',cell:1},
+                    {text:'twitch',icon:'fa-twitch',cell:2},
+                    {text:'telegram',icon:'fa-telegram',cell:1},
+                    {text:'skype',icon:'fa-skype',cell:1},
+                    {text:'steam',icon:'fa-steam-square',cell:1},
+                    {text:'tumblr',icon:' fa-tumblr-square',cell:1},
+                    {text:'linkedin',icon:'fa-linkedin-square',cell:1},
+                    {text:'gg',icon:'fa-gg',cell:1},
+                    {text:'empire',icon:'fa-empire',cell:1},
+                    {text:'apple',icon:' fa-apple',cell:1},
+                    {text:'bitcoin',icon:' fa-btc',cell:1},
+                ]
+
+            }
+   
+
+            
+        });
+
         me.initIcons();
 
         // el.on("click", ".desktop-icon", function (event) {
@@ -66,17 +112,14 @@ DeskTop.prototype = {
         el.on("click",".toolbuttons button",function(e){
             var jq = $(e.currentTarget);
             var index=jq.parents(".window").index();
+  
             var  window = me.windows[index-1];
+        
             window.windowToolButton(jq)
         });
         el.on("click", ".desktop-taskbar-icon", function(event) {
             me.taskIconClick(event)
 
-//            if (window.isMax()) {
-//                window.restore();
-//            } else {
-//                window.max();
-//            }
         });
         el.on("mousedown",".window",function(e){
             var index =$(e.currentTarget).index();
@@ -107,9 +150,12 @@ DeskTop.prototype = {
 
 
         el.on("click",".desktop-startbutton",function(){
-            loading.testfunc();
+            startmenu.ToggleStartMenu();
+      
         })
-
+        el.on('click','.desktop-viewport',function(){
+            startmenu.HideStartMenu()
+        })
 
 
 
@@ -423,6 +469,8 @@ TaskWindow.prototype = {
     min: function () {
         // this.element.removeClass("window-max");
         this.element.addClass("window-min");
+
+        /////////////////////////
         this.element.removeClass("front");
         this.taskBarIcon.removeClass("desktop-window-active");
 
@@ -676,3 +724,337 @@ $.extend(ap, {
 });
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//////////////////dropdown-menu/////////////////////////
+var DropDownMenu = function (element,menuWrap,options) {
+    this.element =element;
+    this.menuWrap = menuWrap;
+
+    this.options = $.extend({}, this.options, options);
+    this.init();
+}
+DropDownMenu.prototype={
+    constructor:DropDownMenu,
+    options:{},
+    init:function(){
+        var me=this,
+            el=this.element,
+            wrap=this.menuWrap,
+            isnavClicked=false;
+         
+        me.dropdownmenuInit()
+        
+
+
+
+
+        wrap.on("click",".github-nav div",function(e){   
+            if(isnavClicked==true){
+                $(e.target).removeClass('active')
+                isnavClicked=false;
+                $('.github-nav div').removeClass('open');
+                $(me.menuWrap[0]).children('.mask').removeClass('active')
+                for(let i=0;i<me.dropdownmenu.length;i++){
+                    me.dropdownmenu.eq(i).addClass('hide')
+                }
+            }else{
+                me.navClick(e);      
+                isnavClicked=true;
+            }
+            
+        });
+        wrap.on("mouseenter",".github-nav div",function(e){
+            if(isnavClicked==false) return;    
+            me.navHover(e);
+        });
+        
+        wrap.on("click",'.mask',function(e){
+            
+            $(e.target).removeClass('active')
+            
+            isnavClicked=false;
+
+            $('.github-nav div').removeClass('open');
+            for(let i=0;i<me.dropdownmenu.length;i++){
+                me.dropdownmenu.eq(i).addClass('hide')
+            }
+        });
+        wrap.on('click','.menu .optionWrap',function(){
+        
+            $('.github-nav div').removeClass('open');
+            for(let i=0;i<me.dropdownmenu.length;i++){
+                me.dropdownmenu.eq(i).addClass('hide')
+            }
+            $(me.menuWrap[0]).children('.mask').removeClass('active')
+            // $('.mask').removeClass('active');
+            isnavClicked=false;
+        })
+       
+        
+    },
+    dropdownmenuInit:function(){
+        var me=this,
+            el=this.element,
+            wrap=this.menuWrap,
+            nav,
+            temp;
+        temp=me.createDropDownMenu();
+        nav=me.createDropDownNav();
+        me.dropdownnav=$(nav).appendTo(el)
+        me.dropdownmenu=$(temp).appendTo(wrap);
+        me.forbidRow();
+
+    },
+    createDropDownMenu:function(){
+        var me=this,
+            opt=me.options.dropdownmenu,
+            temp='';
+        
+        
+        for(let j=0;j<opt.length;j++){
+            temp+='<div style=" " class="menu '+opt[j].cls+' hide">'
+            for(let i=0;i<opt[j].rows;i++){
+                if(!opt[j].shortCut[i])opt[j].shortCut[i]='';
+                if($.inArray(i,opt[j].spliteRow)=='-1'){
+                    temp+='<div class="optionWrap"><div><span class="nav-func-text">'+opt[j].rowText[i]+'</span><span class="shortcut">'+opt[j].shortCut[i]+'</span></div></div>'
+                }else{
+                    temp+='<div class="split optionWrap"><div><span class="nav-func-text">'+opt[j].rowText[i]+'</span><span class="shortcut">'+opt[j].shortCut[i]+'</span></div></div>'
+                }
+            
+            }
+            temp+='</div>'
+        }
+        
+        
+
+        return temp
+    },
+    forbidRow:function(){
+        var me=this,
+            rows,BannedRow
+            opt=me.options.dropdownmenu;
+
+        for(let j=0;j<opt.length;j++){
+            rows=opt[j].forbidRow;
+
+            if(rows.length>0){
+                for(let i=0;i<rows.length;i++){
+                    BannedRow=rows[i],
+                    me.dropdownmenu[j].childNodes[BannedRow].classList.add('forbid')
+                }
+            } 
+        }
+    },
+    createDropDownNav:function(){
+        var me=this,
+        opt=me.options.dropdownmenu,
+        nav='';
+
+        
+        for(let i=0;i<opt.length;i++){
+            nav+='<div class="'+opt[i].name+'">'+opt[i].navText+'</div>'
+        }
+     
+        return nav
+    },
+    navClick:function(event){
+        this.showNavDropdownMenuByClick(event)
+    },
+    navHover:function(event){
+        this.showNavDropdownMenuByHover(event)
+    },
+    getPos:function(){
+        var me=this,
+            x,
+            nav=me.dropdownnav;
+
+        for(let i=0;i<nav.length;i++){
+            x=nav.eq(i).position().left 
+
+            me.dropdownmenu.eq(i).css('left',x)
+            
+        }
+        
+        
+
+    },
+    showNavDropdownMenuByClick:function(event){
+        var index,
+            win,
+            me=this;
+
+        me.getPos();
+        index=$(event.target).index();
+        win=me.dropdownmenu.eq(index);
+
+        $(event.target).addClass('open').siblings().removeClass('open');
+        $(me.menuWrap[0]).children('.mask').addClass('active')
+
+        for(let i=0;i<me.dropdownmenu.length;i++){
+            me.dropdownmenu.eq(i).addClass('hide')
+        }
+     
+        win.removeClass('hide');
+        
+        
+        // $('.mask').addClass('active');
+    },
+    showNavDropdownMenuByHover:function(event){
+        var name= event.target.className,
+        index,win,
+        me=this;
+        $(event.target).addClass('open').siblings().removeClass('open')
+        index=$(event.target).index();
+        win=me.dropdownmenu.eq(index);
+
+        for(let i=0;i<me.dropdownmenu.length;i++){
+            me.dropdownmenu.eq(i).addClass('hide')
+        }
+        win.removeClass('hide')
+        $(me.menuWrap[0]).children('.mask').addClass('active')
+    }
+    
+    
+}
+
+
+
+
+
+
+//////////////////////////////////////startmenu/////////////////
+var StartMenu=function(element,options){
+    this.element=$(element);
+    this.options = $.extend({}, this.options, options);
+    this.init();
+}
+
+StartMenu.prototype={
+    constructor:StartMenu,
+    options:{},
+    init:function(){
+        var me=this;
+        me.StartMenuInit();    
+    },
+    StartMenuInit:function(){
+        var me=this,
+            el=me.element,
+            temp;
+            temp=   '<div class="start-menu">'+
+        
+                        '</div>'
+
+        me.startmenu=$(temp).appendTo(el) 
+        me.StartMenuSidebarInit();
+        me.StartMenuAppviewInit();
+    },
+    StartMenuSidebarInit:function(){
+        var me=this,
+            opt=me.options,
+            template='';
+            el=this.element;
+
+        template+='<div class="sidebar">'
+
+        for(let i=0;i<opt.sidebar.length;i++){
+            template+='<div class="sidebarButton"><i class="fa '+opt.sidebar[i].icon+'"></i>'+opt.sidebar[i].text+'</div>'
+        }
+        template+='</div>'
+        me.startmenusidebar=$(template).appendTo(me.startmenu)
+        
+    },
+    StartMenuAppviewInit:function(){
+        var me=this,
+        opt=me.options,
+        template;
+        el=this.element;
+        template=   '<div class="appview">'+
+                        '<div class="appSection main-app">'+
+                            '<p>Main</p>'+
+                            '<div class="appHolder">'
+        for(let i=0;i<opt.appview.mainApp.length;i++){
+            if(opt.appview.mainApp[i].cell>1){
+                template+='<div class="app big"><i class="fa '+opt.appview.mainApp[i].icon+'"></i><span>'+opt.appview.mainApp[i].text+'</span></div>'
+            }else{
+                template+='<div class="app"><i class="fa '+opt.appview.mainApp[i].icon+'"></i><span>'+opt.appview.mainApp[i].text+'</span></div>'
+            }
+            
+        }
+        template+=  '</div>'+
+                    '</div>'+
+                    '<div class="appSection general-app">'+
+                    '<p>General</p>'+
+                    '<div class="appHolder">'
+
+        for(let j=0;j<opt.appview.generalApp.length;j++){
+            if(opt.appview.generalApp[j].cell>1){
+                template+='<div class="app big"><i class="fa '+opt.appview.generalApp[j].icon+'"></i><span>'+opt.appview.generalApp[j].text+'</span></div>'
+            }else{
+                template+='<div class="app"><i class="fa '+opt.appview.generalApp[j].icon+'"></i><span>'+opt.appview.generalApp[j].text+'</span></div>'
+            }
+            
+        }
+        template+=  '</div>'+
+                    '</div>'+
+                    '</div>'
+        // template=   '<div class="appview">'+
+        //                 '<div class="appSection main-app">'+
+        //                     '<p>Main</p>'+
+        //                     '<div class="appHolder">'+
+
+                        //     '</div>'+
+                        // '</div>'+
+                        // '<div class="appSection general-app">'+
+                        //     '<p>General</p>'+
+                        //     '<div class="appHolder">'+
+                            
+                    //         '</div>'+
+                    //     '</div>'+
+                    // '</div>'
+
+        me.startmenuappview=$(template).appendTo(me.startmenu)
+
+    },
+    ToggleStartMenu:function(){
+        var me= this;
+        // if(me.startmenu.hasClass('active')){
+            
+        //     me.startmenu.removeClass('active')
+        // }else{
+        //     me.startmenu.addClass('active')
+        // }
+        me.startmenu.toggleClass('active');
+    },
+    HideStartMenu:function(){
+        var me=this;
+        
+        me.startmenu.removeClass('active')
+    },
+    
+
+}

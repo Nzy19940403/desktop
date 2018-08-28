@@ -95,7 +95,7 @@ document.write("<link rel=\"stylesheet\" href=\"src/css/windowCommon.css\" type=
     function completeLoading(){
         if(document.readyState == "complete"){
             setTimeout(function(){
-                $('#loadMask').delay(0).hide(0);  
+                $('#loadMask').delay(0).fadeOut(1000);  
             },100)
         }
        
