@@ -150,6 +150,8 @@ DeskTop.prototype = {
 
 
         el.on("click",".desktop-startbutton",function(){
+          
+            
             startmenu.ToggleStartMenu();
       
         })
