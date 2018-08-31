@@ -369,6 +369,7 @@ DeskTop.prototype = {
                 left:oldpos.x,
                 top:oldpos.y
             })
+            tar.removeClass('moving');
         }else if(allow==false){
             if(kk==undefined){
                 tar.css({
@@ -378,7 +379,7 @@ DeskTop.prototype = {
                
                 newpos[index].x=pos.x;
                 newpos[index].y=pos.y;
-                
+                tar.removeClass('moving');
             }else if(kk==index){
                 oldpos=newpos[index];
                 
@@ -386,6 +387,7 @@ DeskTop.prototype = {
                     left:oldpos.x,
                     top:oldpos.y
                 })
+                tar.removeClass('moving');
             }else{
                 icon=document.querySelectorAll('.desktop-icon');
                 var temp;
