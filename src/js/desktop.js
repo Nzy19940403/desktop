@@ -20,7 +20,11 @@ DeskTop.prototype = {
             el = me.element,
             opt = me.options,
             allowdrag=false,
-            dragWin,offsetX,offsetY,resizeX,resizeY;
+            deskiconallowdrag=false,
+            iconmove=false,
+            dragWin,offsetX,offsetY,resizeX,resizeY,tar,tarX,tarY,
+            autosort=false,
+            flag=true;
 
         me.windows = [];
 
@@ -38,7 +42,7 @@ DeskTop.prototype = {
         el.addClass("desktop");
         me.viewport = $('<div class="desktop-viewport"></div>').appendTo(el);
         var toolbar = me.toolbar = $('<div class="desktop-toolbar"></div>').appendTo(el);
-        el.append('<img class="desktop-background" src="' + opt.backgroundImage + '"/>');
+        el.append('<img draggable="false" class="desktop-background" src="' + opt.backgroundImage + '"/>');
         me.startbutton = $('<div class="desktop-startbutton"></div>').appendTo(toolbar);
         me.searchbar = $('<div class="desktop-searchbar"></div>').appendTo(toolbar);
         me.taskbar = $('<div class="desktop-taskbar"></div>').appendTo(toolbar);
@@ -146,12 +150,57 @@ DeskTop.prototype = {
         el.on("mouseup",function(){
             allowdrag=false
         });
+        el.on("mousedown",".desktop-icon",function(e){
+            deskiconallowdrag=true;
+                oldx=e.clientX,
+                oldy=e.clientY,
+                offsetX=$(e.currentTarget).offset().left,
+                offsetY=$(e.currentTarget).offset().top;
+                tar=$(e.currentTarget);
+               
+        })
+        el.on("mousemove",function(e){
+            if(deskiconallowdrag==false) return ; 
+            iconmove=true;
+            me.IconDrag(e,oldx,oldy,offsetX,offsetY,tar)
+        })
+        el.on("mouseup",function(e){
+            if(iconmove==true){     //如果之前移动过了 那么我们来记录icon的新的坐标
+                // var pos=me.changeIconPosByMove(e),
+                //     index=tar.index();
+                pos=me.changeIconPosByMove(e);      //这是为了获得pos.x 和pos.y 这是移动的新坐标
+                function once(){
+                    if(flag){
+                       
+                        newpos=me.getIconPos(pos.pos);  //获得newpos 也就是window resize之后的坐标数组
+                        flag=false
+                    }else{
+                        return
+                    }
+                }
+                once(); //只执行一次 不能一直执行 因为要改动坐标数组 每次重新获得就没用了
+                   
+                me.exchangeIcon(tar,pos,newpos,autosort)   // tar是移动的目标icon ，pos是新的坐标，newpos则是一张初始的坐标数组。autosort是开关 true的时候不能改变位置
+             
+                // tar.css({
+                //     left:pos.x,
+                //     top:pos.y
+                // })
+            
+            }
+            
+            iconmove=false;         //icon没有移动了
+            deskiconallowdrag=false;    
+            
+        })
+
+
 
 
 
         el.on("click",".desktop-startbutton",function(){
           
-            
+
             startmenu.ToggleStartMenu();
       
         })
@@ -167,7 +216,7 @@ DeskTop.prototype = {
             y=me.getClient(e).y;
             console.log(x,y)
         })
-        me.tellTime();
+        //me.tellTime();
     },
     taskIconClick:function(event){
         var jq = $(event.currentTarget),
@@ -226,22 +275,156 @@ DeskTop.prototype = {
             iconPos;
         
 
-        iconPos=me.getIconPos();
+        iconPos=me.changeIconPosByResize();
         $.each(iconPos,function(index,i){
-            html += '<div class="desktop-icon" style="left:' + i.Pos.x + 'px;top:' + i.Pos.y + 'px;"><image class="desktop-icon-image" src="';
+            html += '<div class="desktop-icon" style="left:' + i.Pos.x + 'px;top:' + i.Pos.y + 'px;"><image draggable="false"class="desktop-icon-image" src="';
             html += i.iconPage;
             html += '"/><div class="desktop-icon-text">';
             html += i.text;
             html += '</div></div>';
         })
-    
+        me.icons=$(html);
         me.iconWrapper.html(html);
-
+     
     },
-    getIconCoordinate:function(x,y){
+    getIconNewCoordinate:function(e){
         //获得调整后的新的坐标row/ col
+        var me=this,
+            x=e.clientX,
+            y=e.clientY,
+            el=me.viewport,
+            opt = me.options,
+            newrow,
+            newcol,
+            newx,
+            newy,
+            width = el.width(),
+            height = el.height(),
+            cellWidth = opt.cellWidth,
+            cellHeight = opt.cellHeight,
+            rows = (height-height%cellHeight)/cellHeight,
+            columns = (width-width%cellWidth)/cellWidth,
+            posinfo,
+            pos=[];
+            // for(let i=0;i<columns;i++){
+               
+            //     if(i*cellWidth>x){
+            //         newcol=i-1;    
+            //     }   
+                 
+            // }
+            // newrow=parseInt(y/((height%cellHeight)/rows+cellHeight))+1
+            // newcol=parseInt(x/((width%cellWidth)/columns+cellWidth))+1
+            
+            newcol=parseInt(x/(width/columns));
+            newrow= parseInt(y/(height/rows));
+            
+            newx=newcol*(cellWidth+width%cellWidth/(columns+1));
+            newy=newrow*(cellHeight+height%cellHeight/(rows+1))
+            
+            posinfo=me.changeIconPosByResize();
+            for(let i=0;i<posinfo.length;i++){
+                pos[i]=posinfo[i].Pos
+            }
+            
+            return{x:newx,y:newy,pos:pos}
+
+          
+        
     },
-    getIconPos:function(){
+    exchangeIcon:function(tar,pos,newpos,allow){
+        var me=this,
+            // newpos,
+            index,
+            oldpos,
+            kk,
+            icon;
+            // pos;
+        
+            
+
+        index=tar.index();
+
+       
+        
+       
+
+        function cnki(pos,newpos){
+            for(let i=0;i<newpos.length;i++){
+                if(newpos[i].x==pos.x&&newpos[i].y==pos.y){
+                    
+                    kk=i
+                    break      
+                }
+                
+            }
+        }
+
+        cnki(pos,newpos);
+
+     
+        if(allow==true){
+            oldpos=newpos[index];
+            tar.css({
+                left:oldpos.x,
+                top:oldpos.y
+            })
+        }else if(allow==false){
+            if(kk==undefined){
+                tar.css({
+                    left:pos.x,
+                    top:pos.y
+                })
+               
+                newpos[index].x=pos.x;
+                newpos[index].y=pos.y;
+                
+            }else if(kk==index){
+                oldpos=newpos[index];
+                tar.css({
+                    left:oldpos.x,
+                    top:oldpos.y
+                })
+            }else{
+                icon=document.querySelectorAll('.desktop-icon');
+                var temp;
+                
+                tar.css({
+                    left:newpos[kk].x,
+                    top:newpos[kk].y
+                });
+
+                // $(icon[kk]).css({
+                //     left:newpos[index].x,
+                //     top:newpos[index].y
+                // });
+                $(icon[kk]).animate({
+                    left:newpos[index].x,
+                    top:newpos[index].y
+                })
+                
+                temp=newpos[index];
+                newpos[index]=newpos[kk];
+                newpos[kk]=temp;
+                temp=undefined;
+                
+                // newpos[index].x=pos.x;
+                // newpos[index].y=pos.y;
+                // newpos[kk].x=oldpos.x;
+                // newpos[kk].y=oldpos.y;
+            
+            }
+        }
+        
+        
+        
+    },
+    getIconPos:function(n){
+        var me=this,
+        newpos=JSON.parse(JSON.stringify(n));
+        return newpos;
+    },
+    changeIconPosByResize:function(){
         var me = this,
             opt = me.options,
             icons = opt.icons,
@@ -278,6 +461,11 @@ DeskTop.prototype = {
             return iconPos;
 
 
+    },
+    changeIconPosByMove:function(e){
+        var me=this;
+            
+        return me.getIconNewCoordinate(e);
     },
     tellTime:function(){
         var me=this
@@ -376,6 +564,16 @@ DeskTop.prototype = {
         x=e.clientX;
         y=e.clientY;
         return {x:x,y:y}
+    },
+    IconDrag:function(e,oldx,oldy,offsetX,offsetY,tar){
+       
+
+        var newx=e.clientX,
+            newy=e.clientY;
+        tar.css({
+            left:newx-oldx+offsetX,
+            top:newy-oldy+offsetY
+        })
     }
 
 }

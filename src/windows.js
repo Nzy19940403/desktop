@@ -74,8 +74,8 @@ var GithubWindow = TaskWindow.extend({
     githubNavInit:function(){
         var me=this,
             menu;
-      
-
+     
+        //第一个参数是nav本身，第二个参数是包裹nav的父元素，第三个参数是配置
         menu=new DropDownMenu(me.githubNav,me.element.contentwrap,{dropdownmenu:[
             {name:'file-nav',rows:'5',spliteRow:[1,3,4],cls:'file-dropdown',navText:'File',forbidRow:[],
             rowText:['New repository','Add local repository','clone repository','options','exit',],

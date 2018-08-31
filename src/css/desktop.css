@@ -216,7 +216,7 @@
     margin: auto;
     padding-top: .9em;
     padding-bottom: 1em;
-    padding-left: 1em;
+    /* padding-left: 1em; */
     height: 90%;
     width: 100%;
     overflow: auto;
