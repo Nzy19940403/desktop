@@ -151,17 +151,19 @@ DeskTop.prototype = {
             allowdrag=false
         });
         el.on("mousedown",".desktop-icon",function(e){
+            if(iconmove==true) return;
             deskiconallowdrag=true;
-                oldx=e.clientX,
-                oldy=e.clientY,
-                offsetX=$(e.currentTarget).offset().left,
-                offsetY=$(e.currentTarget).offset().top;
-                tar=$(e.currentTarget);
-               
+            oldx=e.clientX,
+            oldy=e.clientY,
+            offsetX=$(e.currentTarget).offset().left,
+            offsetY=$(e.currentTarget).offset().top;
+            tar=$(e.currentTarget);
+            
         })
         el.on("mousemove",function(e){
             if(deskiconallowdrag==false) return ; 
             iconmove=true;
+            tar.addClass('moving');
             me.IconDrag(e,oldx,oldy,offsetX,offsetY,tar)
         })
         el.on("mouseup",function(e){
@@ -181,16 +183,14 @@ DeskTop.prototype = {
                 once(); //只执行一次 不能一直执行 因为要改动坐标数组 每次重新获得就没用了
                    
                 me.exchangeIcon(tar,pos,newpos,autosort)   // tar是移动的目标icon ，pos是新的坐标，newpos则是一张初始的坐标数组。autosort是开关 true的时候不能改变位置
-             
-                // tar.css({
-                //     left:pos.x,
-                //     top:pos.y
-                // })
-            
+                // tar.removeClass('moving');
+                
             }
+                iconmove=false;         //icon没有移动了
+                deskiconallowdrag=false;  
             
-            iconmove=false;         //icon没有移动了
-            deskiconallowdrag=false;    
+            
+              
             
         })
 
@@ -216,7 +216,7 @@ DeskTop.prototype = {
             y=me.getClient(e).y;
             console.log(x,y)
         })
-        //me.tellTime();
+        me.tellTime();
     },
     taskIconClick:function(event){
         var jq = $(event.currentTarget),
@@ -381,6 +381,7 @@ DeskTop.prototype = {
                 
             }else if(kk==index){
                 oldpos=newpos[index];
+                
                 tar.css({
                     left:oldpos.x,
                     top:oldpos.y
@@ -388,25 +389,30 @@ DeskTop.prototype = {
             }else{
                 icon=document.querySelectorAll('.desktop-icon');
                 var temp;
-                
+        
+                // setTimeout(function())
                 tar.css({
                     left:newpos[kk].x,
                     top:newpos[kk].y
                 });
 
-                // $(icon[kk]).css({
-                //     left:newpos[index].x,
-                //     top:newpos[index].y
-                // });
                 $(icon[kk]).animate({
                     left:newpos[index].x,
                     top:newpos[index].y
+                },function(){
+                    tar.removeClass('moving');
                 })
                 
+                // $(icon[kk]).css({
+                //     left:newpos[index].x,
+                //     top:newpos[index].y
+                // })
+
                 temp=newpos[index];
                 newpos[index]=newpos[kk];
                 newpos[kk]=temp;
                 temp=undefined;
+                
                 
                 // newpos[index].x=pos.x;
                 // newpos[index].y=pos.y;
